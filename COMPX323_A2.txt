@@ -1,0 +1,147 @@
+-- DROP ALL
+DROP SEQUENCE user_seq;
+DROP SEQUENCE spot_seq;
+DROP SEQUENCE comment_seq;
+
+DROP TABLE a2_has_tag;
+DROP TABLE a2_rates_spot;
+DROP TABLE a2_tag;
+DROP TABLE a2_comment;
+DROP TABLE a2_spot;
+DROP TABLE a2_user;
+
+--CREATE SEQUENCES
+
+CREATE SEQUENCE user_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE spot_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE comment_seq START WITH 1 INCREMENT BY 1;
+
+-- CREATE TABLES
+CREATE TABLE a2_user(
+    userID INTEGER DEFAULT user_seq.NEXTVAL PRIMARY KEY,
+    email VARCHAR(40) NOT NULL UNIQUE CHECK(email like '%_@__%.__%'),
+    f_name VARCHAR(30) NOT NULL,
+    l_name VARCHAR(30) NOT NULL,
+    phone VARCHAR(20) UNIQUE CHECK (REGEXP_LIKE(phone, '^\(\d{3}\) \d{3}-\d{4}$')),
+    bio VARCHAR(200)
+);
+
+CREATE TABLE a2_spot(
+    spotID INTEGER DEFAULT spot_seq.NEXTVAL PRIMARY KEY,
+    userID INTEGER NOT NULL,
+    lon NUMBER NOT NULL,
+    lat NUMBER NOT NULL,
+    spot_name VARCHAR(50) NOT NULL,
+    spot_description VARCHAR(100),
+    creation_date DATE,
+    
+    FOREIGN KEY (userID) REFERENCES a2_user(userID)
+);
+
+CREATE TABLE a2_comment(
+    commentID INTEGER DEFAULT comment_seq.NEXTVAL PRIMARY KEY,
+    userID INTEGER NOT NULL,
+    spotID INTEGER NOT NULL,
+    comment_text VARCHAR(200) NOT NULL,
+    comment_date DATE,
+    FOREIGN KEY (spotID) REFERENCES a2_spot(spotID),
+    FOREIGN KEY (userID) REFERENCES a2_user(userID)
+);
+
+CREATE TABLE a2_tag(
+    tagName VARCHAR(20) PRIMARY KEY,
+    description VARCHAR(100)
+);
+
+CREATE TABLE a2_has_tag(
+    spotID INTEGER NOT NULL,
+    tagName VARCHAR(20) NOT NULL,
+    
+    FOREIGN KEY (spotID) REFERENCES a2_spot(spotID),
+    FOREIGN KEY (tagName) REFERENCES a2_tag(tagName)
+);
+
+
+CREATE TABLE a2_rates_spot(
+    spotID INTEGER NOT NULL,
+    userID INTEGER NOT NULL,
+    created_date DATE,
+    rating INTEGER CHECK(rating >= 0 and rating <= 5),
+    
+    FOREIGN KEY (spotID) REFERENCES a2_spot(spotID),
+    FOREIGN KEY (userID) REFERENCES a2_user(userID)
+);
+
+select * from a2_user;
+select * from a2_spot;
+select * from a2_comment;
+
+
+select u.f_name, u.l_name, s.spot_name, s.spot_description from a2_user u, a2_spot s
+WHERE u.userid = s.userid;
+
+SELECT s.spotID, s.lon, s.lat, s.spot_name, ht.tagname
+FROM a2_spot s
+INNER JOIN a2_has_tag ht ON s.spotID = ht.spotID
+INNER JOIN a2_tag t ON ht.tagName = t.tagName
+WHERE t.tagName = 'Vault';
+
+
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'joe@example.com','Joe','Bloggs','(027) 111-5454',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'fred@example.com','Fred','Simpson','(027) 222-3333',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'sue@example.com','Sue','Wright','(027) 444-1122',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'mark@example.com','Mark','Bird','(027) 689-3333',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'sarah@example.com','Sarah','Late','(027) 777-6644',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'anna@example.com','Anna','Simpson','(027) 567-1111',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'andrew@example.com','Andrew','Smith','(027) 447-8854',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'ben@example.com','Ben','Worth','(027) 789-1011',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'cooper@example.com','Cooper','South','(027) 789-3333',NULL);
+INSERT INTO a2_user (userID, email, f_name, l_name, phone, bio) VALUES (USER_SEQ.nextval,'elizabeth@example.com','Elizabeth','North','(027) 654-3214',NULL);
+
+
+
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (1, 123.456, 78.901, 'Spot 1', 'This is spot 1 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (2, 987.654, 32.109, 'Spot 2', 'This is spot 2 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (3, 456.789, 21.345, 'Spot 3', 'This is spot 3 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (4, 789.123, 65.432, 'Spot 4', 'This is spot 4 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (5, 321.987, 43.210, 'Spot 5', 'This is spot 5 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (5, 135.246, 76.543, 'Spot 6', 'This is spot 6 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (1, 876.543, 54.321, 'Spot 7', 'This is spot 7 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (1, 246.135, 87.654, 'Spot 8', 'This is spot 8 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (3, 654.321, 98.765, 'Spot 9', 'This is spot 9 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_spot (userID, lon, lat, spot_name, spot_description, creation_date) VALUES (9, 432.109, 67.890, 'Spot 10', 'This is spot 10 description.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (1, 1, 'This is the first comment for Spot 1.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (2, 1, 'This is the second comment for Spot 1.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (3, 2, 'This is the first comment for Spot 2.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (4, 3, 'This is the first comment for Spot 3.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (5, 3, 'This is the second comment for Spot 3.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (6, 2, 'This is the second comment for Spot 2.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (7, 4, 'This is the first comment for Spot 4.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (8, 5, 'This is the first comment for Spot 5.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (9, 6, 'This is the first comment for Spot 6.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+INSERT INTO a2_comment (userID, spotID, comment_text, comment_date) VALUES (10, 7, 'This is the first comment for Spot 7.', TO_DATE('2023-04-29', 'YYYY-MM-DD'));
+
+INSERT INTO a2_tag (tagName, description) VALUES ('Precision', 'A parkour move that involves landing on a small target with precision and control.');
+INSERT INTO a2_tag (tagName, description) VALUES ('Wall Run', 'A parkour move where the practitioner runs towards a wall, jumps off it, and propels themselves forward.');
+INSERT INTO a2_tag (tagName, description) VALUES ('Vault', 'A parkour move that involves clearing an obstacle by using hands to push off it.');
+INSERT INTO a2_tag (tagName, description) VALUES ('Cat Leap', 'A parkour move where the practitioner jumps horizontally and grabs onto a ledge or wall.');
+INSERT INTO a2_tag (tagName, description) VALUES ('Kong Vault', 'A parkour move where the practitioner dives over an obstacle while pushing off it with their hands.');
+
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (1, 'Precision');
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (1, 'Vault');
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (3, 'Vault');
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (2, 'Wall Run');
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (3, 'Cat Leap');
+INSERT INTO a2_has_tag (spotID, tagName) VALUES (4, 'Kong Vault');
+
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (1, 1, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 4);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (2, 1, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 3);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (1, 2, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 5);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (3, 3, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 4);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (2, 4, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 2);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (4, 2, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 3);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (5, 3, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 4);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (3, 4, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 5);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (1, 5, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 2);
+INSERT INTO a2_rates_spot (spotID, userID, created_date, rating) VALUES (2, 5, TO_DATE('2023-04-29', 'YYYY-MM-DD'), 4);
