@@ -32,6 +32,7 @@
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.searchButton = new System.Windows.Forms.Button();
             this.displayListView = new System.Windows.Forms.ListView();
+            this.addButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // selectComboBox
@@ -53,9 +54,9 @@
             // 
             // searchButton
             // 
-            this.searchButton.Location = new System.Drawing.Point(452, 47);
+            this.searchButton.Location = new System.Drawing.Point(452, 46);
             this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.Size = new System.Drawing.Size(75, 22);
             this.searchButton.TabIndex = 5;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
@@ -74,11 +75,22 @@
             this.displayListView.View = System.Windows.Forms.View.Details;
             this.displayListView.SelectedIndexChanged += new System.EventHandler(this.displayListView_SelectedIndexChanged);
             // 
+            // addButton
+            // 
+            this.addButton.Location = new System.Drawing.Point(330, 434);
+            this.addButton.Name = "addButton";
+            this.addButton.Size = new System.Drawing.Size(75, 23);
+            this.addButton.TabIndex = 7;
+            this.addButton.Text = "Edit/Add";
+            this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 514);
+            this.Controls.Add(this.addButton);
             this.Controls.Add(this.displayListView);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.searchTextBox);
@@ -96,6 +108,7 @@
         private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.Button searchButton;
         private System.Windows.Forms.ListView displayListView;
+        private System.Windows.Forms.Button addButton;
     }
 }
 

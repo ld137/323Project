@@ -26,10 +26,13 @@ namespace ld137_323_Assignment_2
             try
             {
                 LoginResultLabel.Text = string.Empty;
-                string username = usernameTextbox.Text;
-                string password = passwordTextbox.Text;
+                //string username = usernameTextbox.Text;
+                //string password = passwordTextbox.Text;
+                string username = "ld137";
+                string password = "QDWLfMFVjK";
                 succ = false;
-                string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + username + ";Password=" + password + ";";
+                //string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + username + ";Password=" + password + ";";
+                string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + "ld137" + ";Password=" + "QDWLfMFVjK" + ";";
                 conn = new OracleConnection(oradb);  // C#
                 conn.Open();
                 cmd = new OracleCommand();
@@ -46,6 +49,7 @@ namespace ld137_323_Assignment_2
             catch (Exception ex)
             {
                 LoginResultLabel.Text = "Login Error: \n Invalid username or password";
+                System.Console.WriteLine(ex.Message);
             }
         }
 

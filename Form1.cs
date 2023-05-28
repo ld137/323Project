@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -29,10 +30,12 @@ namespace ld137_323_Assignment_2
 
             Logon_Form logonForm = new Logon_Form();
             logonForm.ShowDialog();
-            this.username = logonForm.getUsername();
-            this.password = logonForm.getPassword();
+            //this.username = logonForm.getUsername();
+            //this.password = logonForm.getPassword();
+            this.username = "1";
+            this.password = "2";
 
-            if(string.IsNullOrEmpty(this.username) || string.IsNullOrEmpty(this.password))
+            if (string.IsNullOrEmpty(this.username) || string.IsNullOrEmpty(this.password))
             {
                 this.Close();
             }
@@ -41,12 +44,13 @@ namespace ld137_323_Assignment_2
             selectComboBox.Items.Add("Spot:");
             selectComboBox.Items.Add("Tag:");
             selectComboBox.Items.Add("Comment:");
-
+            selectComboBox.Items.Add("Phone Number:");
         }
 
         void sqlRequest(string query)
         {
-            string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + this.username + ";Password=" + this.password + ";";
+            //string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + this.username + ";Password=" + this.password + ";";
+            string oradb = "Data Source=oracle.cms.waikato.ac.nz:1521/teaching;User Id=" + "ld137" + ";Password=" + "QDWLfMFVjK" + ";";
             OracleConnection conn = new OracleConnection(oradb);  // C#
             try
             {
@@ -126,6 +130,15 @@ namespace ld137_323_Assignment_2
                 {
                     sqlRequest("select * from a2_comment where REGEXP_LIKE(comment_text, '" + searchQuery + "', 'i')");
                 }
+                else if (selectComboBox.SelectedIndex == 4)
+                {
+                    searchQuery = Regex.Replace(searchQuery, @"\D", "");
+                    searchQuery = string.Format("({0}) {1}-{2}",
+                        searchQuery.Substring(0, 3),
+                        searchQuery.Substring(3, 3),
+                        searchQuery.Substring(6));
+                    sqlRequest("select * from a2_user u where u.phone = '"+searchQuery+"'");
+                }
             }
             return;
         }
@@ -166,6 +179,12 @@ namespace ld137_323_Assignment_2
             {
 
             }
+        }
+
+        private void addButton_Click(object sender, EventArgs e)
+        {
+            AddModify addForm = new AddModify();
+            addForm.ShowDialog();
         }
     }
 }
